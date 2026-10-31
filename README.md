@@ -16,7 +16,7 @@ Version 0.1.0. Les tests unitaires et la compilation debug ont réussi sur [GitH
 **Important :** `192.168.1.100` est une valeur illustrative ; remplace-la. Le trafic HTTP local n'est pas chiffré. Le serveur peut journaliser les requêtes : contrôler sa configuration, désactiver les journaux sensibles et vérifier qu'il ne transmet pas le contenu à des services tiers. La validation d'adresse de l'application n'est pas un pare-feu et ne protège pas le serveur contre d'autres appareils du LAN.
 
 ## APK via GitHub Actions
-Chaque push sur `main` et chaque lancement manuel du workflow exécutent la résolution des dépendances, les tests unitaires et la compilation. Le workflow vérifie que l'APK existe et dépasse 1 Mo, puis le publie sous l'artefact `CorrecteurDys-debug`. Dernière exécution réussie : [run 41232354478](https://github.com/wensingmathis/CorrecteurDys/actions/runs/41232354478).
+Chaque push sur `main` et chaque lancement manuel du workflow exécutent la résolution des dépendances, les tests unitaires et la compilation. Le workflow vérifie que l'APK existe et dépasse 1 Mo, puis le publie sous l'artefact `CorrecteurDys-debug`. Exécution de référence réussie : [run 41232792552](https://github.com/wensingmathis/CorrecteurDys/actions/runs/41232792552).
 
 Dans **GitHub → Actions**, ouvrir une exécution réussie, télécharger l'artefact `CorrecteurDys-debug`, puis extraire `app-debug.apk`. Transférer l'APK sur le téléphone, l'ouvrir et autoriser temporairement l'installation depuis le gestionnaire de fichiers si Android le demande. Une APK debug n'est pas une version de production ; les APK produits par des exécutions différentes peuvent nécessiter la désinstallation préalable de l'ancienne version.
 
