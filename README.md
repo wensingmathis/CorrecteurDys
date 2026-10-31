@@ -1,29 +1,89 @@
-# Correcteur Dys (Android)
+# Correcteur Dys
 
-Application Android Kotlin + Jetpack Compose, français en priorité. Aucun compte, publicité, télémétrie ou stockage du texte. **Le texte est envoyé exclusivement à l'adresse IPv4 privée du serveur LanguageTool local que tu configures** ; l'application refuse les hôtes publics et les noms DNS. Le texte quitte donc l'appareil vers ce serveur sur le LAN et reste sous le contrôle de son administrateur.
+Correcteur orthographique et grammatical pour Android, pensé pour écrire en français sans dépendre d'un cloud public ni d'un compte utilisateur.
 
-## État et limites v0.1.0
-Version 0.1.0. Les tests unitaires et la compilation debug ont réussi sur [GitHub Actions](https://github.com/wensingmathis/CorrecteurDys/actions/runs/41232354478) ; l'APK est disponible dans l'artefact `CorrecteurDys-debug`. L'interface n'a pas été testée sur téléphone ou émulateur. Le moteur LanguageTool ne s'exécute pas sur Android : un ordinateur/serveur local est nécessaire. La police OpenDyslexic n'est pas embarquée ; polices système disponibles (Sans-serif et Serif). Les sous-catégories sont indicatives et les suggestions LanguageTool ne sont pas parfaites. Les erreurs se touchent dans la zone de prévisualisation sous la zone de saisie (pas directement dans l'éditeur). Les changements de texte suppriment les résultats obsolètes. Le bouton « Tout corriger » applique la première suggestion pour chaque erreur non chevauchante, de droite à gauche. Revérifier après correction.
+Le but de Correcteur Dys est simple : corriger les erreurs de manière fiable, lisible et respectueuse de la vie privée. L'application ne transmet pas le texte à Internet. Elle se connecte uniquement à un serveur LanguageTool auto-hébergé sur le réseau local, avec validation stricte des adresses IPv4 privées et sans redirection HTTP.
 
-## Démarrer LanguageTool sur ton PC Linux
-1. Télécharger l'archive du serveur depuis https://dev.languagetool.org/http-server puis l'extraire. Le serveur requiert Java ; suivre la version indiquée par LanguageTool.
-2. Dans le dossier extrait, créer `server.properties` (vide pour commencer).
-3. Exécuter le serveur : `java -cp languagetool-server.jar org.languagetool.server.HTTPServer --config server.properties --port 8081 --public`.
-4. `--public` rend le serveur accessible depuis le réseau. Sur le PC, configurer le pare-feu pour n'autoriser le port TCP 8081 que depuis le sous-réseau local de confiance. **Ne pas créer de redirection de port sur le routeur, ne pas exposer le service à Internet et ne pas utiliser de Wi-Fi public/non fiable.**
-5. Trouver l'adresse IPv4 privée du PC avec `hostname -I`, puis saisir `http://IP_DU_PC:8081` dans l'appli. Le téléphone et le PC doivent être sur le même réseau local.
-6. Vérifier le service depuis le PC : `curl -d 'language=fr' --data-urlencode 'text=Je sui content.' http://127.0.0.1:8081/v2/check`.
+## Pourquoi ce logiciel ?
 
-**Important :** `192.168.1.100` est une valeur illustrative ; remplace-la. Le trafic HTTP local n'est pas chiffré. Le serveur peut journaliser les requêtes : contrôler sa configuration, désactiver les journaux sensibles et vérifier qu'il ne transmet pas le contenu à des services tiers. La validation d'adresse de l'application n'est pas un pare-feu et ne protège pas le serveur contre d'autres appareils du LAN.
+- Écriture en français prioritaire
+- Aucune publicité, aucun tracking, aucun SDK cloud
+- Aucun stockage du texte dans les préférences ou les logs
+- Correction locale via un serveur LanguageTool de confiance
+- Interface Android simple, claire et accessible
+- Conçu pour les utilisateurs qui veulent garder le contrôle de leurs données
 
-## APK via GitHub Actions
-Chaque push sur `main` et chaque lancement manuel du workflow exécutent la résolution des dépendances, les tests unitaires et la compilation. Le workflow vérifie que l'APK existe et dépasse 1 Mo, puis le publie sous l'artefact `CorrecteurDys-debug`. Exécution de référence réussie : [run 41232792552](https://github.com/wensingmathis/CorrecteurDys/actions/runs/41232792552).
+## Ce que l'application peut faire
 
-Dans **GitHub → Actions**, ouvrir une exécution réussie, télécharger l'artefact `CorrecteurDys-debug`, puis extraire `app-debug.apk`. Transférer l'APK sur le téléphone, l'ouvrir et autoriser temporairement l'installation depuis le gestionnaire de fichiers si Android le demande. Une APK debug n'est pas une version de production ; les APK produits par des exécutions différentes peuvent nécessiter la désinstallation préalable de l'ancienne version.
+- Correction orthographique
+- Correction grammaticale
+- Suggestions de conjugaison et ponctuation
+- Sélection de texte depuis Android via `ACTION_SEND`
+- Travail avec un serveur LanguageTool local sur le réseau domestique ou professionnel
+- Respect du principe : le texte reste chez vous autant que possible
 
-Si le workflow échoue, **ne pas installer et ne pas déclarer l'APK validé** : consulter le journal d'erreurs, puis corriger les sources. Un APK debug est signé par la clé de debug GitHub Actions ; les mises à jour entre exécutions peuvent nécessiter une désinstallation, ce qui est acceptable car aucun texte n'est enregistré.
+## Valeur ajoutée
 
-## Construction locale
-Prérequis : JDK 17 et Android SDK avec Android 35 et les Build Tools correspondants. Le wrapper télécharge Gradle 8.13 et vérifie son SHA-256 ; aucun Gradle système n'est requis.
+Correcteur Dys n'est pas un service SaaS. C'est un outil de productivité orienté confidentialité :
+
+- le texte n'est pas envoyé à un domaine public,
+- le serveur est explicitement configuré par l'utilisateur,
+- la correction repose sur un moteur de référence localisé,
+- les données de préférence restent séparées du contenu saisi.
+
+Pour les utilisateurs sensibles au respect de la vie privée, c'est une alternative plus rassurante aux correcteurs en ligne ou aux services centralisés.
+
+## Confidentialité et sécurité
+
+Invariants du projet :
+
+- Aucun texte n'est envoyé à un domaine public,
+- le client HTTP n'utilise que des requêtes POST vers une IPv4 privée validée,
+- aucune redirection HTTP n'est suivie,
+- les textes ne sont ni journalisés ni persistés,
+- les préférences sont les seules données sauvegardées,
+- aucune analytics, publicité, SDK cloud ni permission de stockage n'est ajoutée,
+- les messages d'erreur ne contiennent pas le texte saisi.
+
+## Architecture
+
+- `MainActivity.kt` : écran principal, paramètres d'accessibilité et gestion de `ACTION_SEND`
+- `EditorViewModel.kt` : état mémoire, orchestration asynchrone et invalidation des résultats obsolètes
+- `LanguageToolClient.kt` : requêtes HTTP POST vers `/v2/check` avec validation stricte de l'adresse locale
+- `Correction.kt` : modèles, classification heuristique et application des suggestions par offsets UTF-16
+
+## Stack technique
+
+- Kotlin 2.2.20
+- Jetpack Compose
+- MVVM
+- minSdk 26
+- Java 17
+- AGP 8.11.1
+- Gradle 8.13 via wrapper
+- compileSdk / targetSdk 35
+
+## Démarrer le serveur LanguageTool local
+
+1. Télécharger l'archive du serveur LanguageTool depuis le site officiel de l'éditeur.
+2. Extraire le paquet sur un ordinateur du réseau local.
+3. Créer un fichier `server.properties` si nécessaire.
+4. Démarrer le serveur sur un port local, par exemple 8081.
+5. Vérifier l'adresse IPv4 privée du PC avec `hostname -I`.
+6. Saisir l'URL locale dans l'application, par exemple : `http://192.168.1.100:8081`
+7. Vérifier le service local avec :
+
+```sh
+curl -d 'language=fr' --data-urlencode 'text=Je sui content.' http://127.0.0.1:8081/v2/check
+```
+
+Important : le réseau local ne garantit pas le chiffrement. Le serveur doit être géré par l'utilisateur ou l'administrateur du réseau, et ne doit pas être exposé à Internet.
+
+## Installation de l'application
+
+### Build local
+
+Prérequis : JDK 17 et Android SDK avec Android 35 et les outils associés.
 
 À la racine du projet :
 
@@ -32,17 +92,69 @@ Prérequis : JDK 17 et Android SDK avec Android 35 et les Build Tools correspond
 ./gradlew :app:assembleDebug
 ```
 
-Sous Windows, remplacer `./gradlew` par `gradlew.bat`. Sortie debug : `app/build/outputs/apk/debug/app-debug.apk`.
+Sous Windows, remplacer `./gradlew` par `gradlew.bat`.
 
-## Architecture
-- `MainActivity.kt` : UI Compose + réglages (préférences seulement) + partage Android.
-- `EditorViewModel.kt` : état éphémère et orchestration de la correction.
-- `LanguageToolClient.kt` : API locale, validation des adresses et parsing JSON.
-- `Correction.kt` : modèles, classification et application sûre des suggestions.
-- `app/src/test` : tests unitaires.
+### APK via GitHub Actions
+
+Chaque push sur la branche principale et chaque exécution manuelle déclenchent :
+
+- résolution des dépendances,
+- tests unitaires,
+- compilation debug,
+- vérification de la présence de l'APK,
+- upload de l'artefact.
+
+Dans GitHub → Actions, ouvrir une exécution réussie et télécharger l'artefact `CorrecteurDys-debug`. Ensuite :
+
+1. extraire `app-debug.apk`,
+2. transférer l'APK sur le téléphone,
+3. ouvrir le fichier et autoriser l'installation.
+
+## État du projet
+
+Version actuelle : v0.1.0.
+
+Les tests unitaires et la compilation debug ont été validés sur GitHub Actions. L'application est fonctionnelle comme prototype technique et démonstrateur de principe orienté confidentialité.
+
+## Limites actuelles
+
+- aucune test UI / instrumentation n'est présent,
+- aucun test sur appareil / émulateur n'est présent,
+- la classification orthographe / grammaire / conjugaison / ponctuation reste heuristique,
+- le transport local HTTP n'est pas chiffré,
+- les catégories LanguageTool, les collisions d'offsets et les réglages avancés restent à améliorer,
+- OpenDyslexic, certificat épinglé, authentification serveur et renforcements de sécurité sont des axes de développement à venir.
+
+## Roadmap
+
+### À court terme
+- améliorations de la correspondance des catégories LanguageTool,
+- meilleure gestion des langues et des options de langue,
+- tests unitaires sur les transformations et l'intégration d'hôtes publics,
+- validation des cas de collisions d'offsets,
+- sécurisation du transport sur le réseau local.
+
+### À moyen terme
+- support OpenDyslexic avec attribution de licence et intégration de la police,
+- tests UI et instrumentation Android,
+- protection du flux réseau avec HTTPS local et certificat épinglé,
+- authentification serveur et durcissement de la configuration réseau.
 
 ## Licence
-Projet distribué sous licence MIT ; voir [LICENSE](LICENSE).
 
-## Confidentialité technique
-Aucun hôte Internet public accepté. Pas de stockage du texte en base ou préférences. Le texte peut temporairement exister dans la mémoire du processus, le presse-papier après « Copier » ou dans la pile d'apps Android. Désactiver les sauvegardes Android. Le serveur LT est sous le contrôle de son administrateur.
+Projet distribué sous licence MIT. Voir [LICENSE](LICENSE).
+
+## Démarche de conception
+
+Correcteur Dys a été pensé comme un outil utile, simple et digne de confiance :
+
+- adapté à un usage quotidien,
+- sans dépendance aux services publics,
+- centré sur la confidentialité,
+- compatible avec un usage personnel ou professionnel sur un réseau local contrôlé.
+
+Ce logiciel est destiné aux personnes qui veulent écrire mieux en français sans accepter la collecte de contenu ou le modèle cloud par défaut.
+
+---
+
+Correcteur Dys — écrivez mieux en français, sans exposer vos textes.
