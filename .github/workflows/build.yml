@@ -1,0 +1,46 @@
+name: Compiler et tester l'APK
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+      - name: Installer Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Installer Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Configurer Gradle via le wrapper
+        uses: gradle/actions/setup-gradle@v4
+      - name: Vérifier les dépendances
+        run: ./gradlew --no-daemon --stacktrace :app:dependencies
+      - name: Tests unitaires
+        run: ./gradlew --no-daemon --stacktrace :app:testDebugUnitTest
+      - name: Construire APK debug
+        run: ./gradlew --no-daemon --stacktrace :app:assembleDebug
+      - name: Vérifier l'APK
+        shell: bash
+        run: |
+          apk="app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$apk" || { echo "APK absent ou vide : $apk" >&2; exit 1; }
+          size="$(wc -c < "$apk")"
+          if (( size < 1000000 )); then
+            echo "APK anormalement petit : ${size} octets" >&2
+            exit 1
+          fi
+          echo "APK présent : ${size} octets"
+      - name: Publier APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: CorrecteurDys-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
