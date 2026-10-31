@@ -4,6 +4,14 @@ Correcteur orthographique et grammatical pour Android, pensé pour écrire en fr
 
 Le but de Correcteur Dys est simple : corriger les erreurs de manière fiable, lisible et respectueuse de la vie privée. L'application ne transmet pas le texte à Internet. Elle se connecte uniquement à un serveur LanguageTool auto-hébergé sur le réseau local, avec validation stricte des adresses IPv4 privées et sans redirection HTTP.
 
+## Open source
+
+Ce projet est open source et disponible publiquement sur GitHub. Le code est librement consultable, auditables et réutilisable selon la licence du dépôt.
+
+- Licence : MIT
+- Code source : https://github.com/wensingmathis/CorrecteurDys
+- Objectif : proposer un correcteur local, fiable et respectueux de la vie privée
+
 ## Pourquoi ce logiciel ?
 
 - Écriture en français prioritaire
