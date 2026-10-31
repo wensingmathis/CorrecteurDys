@@ -28,7 +28,7 @@ Ne jamais qualifier un build ou une fonction de « testé » sans résultat CI o
 - `LanguageToolClient.kt` : requête HTTP POST `/v2/check`, IPv4 privée validée, redirections désactivées, délais bornés ; le texte n'est pas écrit dans les logs ni les préférences.
 - `Correction.kt` : modèles, classification heuristique et application des propositions par offsets UTF-16 ; `CorrectionEngineTest.kt` couvre les transformations et les hôtes publics.
 - Java 17, AGP 8.11.1, Kotlin/Compose 2.2.20, Gradle 8.13 via wrapper, compileSdk/targetSdk 35 et minSdk 26.
-- Le wrapper contrôle le SHA-256 de la distribution Gradle. GitHub Actions doit exécuter les tests avant l'APK debug et téléverser celui-ci comme artefact.
+- Le wrapper contrôle le SHA-256 de la distribution Gradle. GitHub Actions installe explicitement `platforms;android-35`, `build-tools;35.0.0` et `platform-tools` via `sdkmanager` (l'action Android précédente échouait car elle demandait le paquet supprimé `tools`), puis doit exécuter les tests avant l'APK debug et téléverser celui-ci comme artefact.
 
 ## Problèmes connus / validation
 - Les sources fournies ne comportent pas encore de résultat de compilation ou de test CI vérifiable ; ne pas présenter l'APK comme construit avant un run réussi.

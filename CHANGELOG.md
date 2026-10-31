@@ -3,6 +3,7 @@
 ## Préparation de publication — 31 octobre 2026
 - Ajout du wrapper Gradle 8.13 (scripts Linux/Windows, JAR et checksum de distribution).
 - Workflow configuré sur les push de `main` et les lancements manuels ; résolution des dépendances, tests, compilation et vérification de taille de l'APK avant l'artefact.
+- Remplacement de l'installation Android qui échouait sur le paquet SDK obsolète `tools` par l'installation explicite des composants Android 35.
 - Documentation de compilation locale et du démarrage LanguageTool avec restrictions réseau ; ajout de la licence MIT et exclusions de fichiers locaux/secrets.
 - Compilation, tests unitaires, exécution GitHub Actions et installation sur appareil non confirmés dans cet environnement.
 
